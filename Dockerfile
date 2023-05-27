@@ -1,10 +1,9 @@
-FROM node:latest as build
+#stage 1
+FROM node:latest as node
 WORKDIR /app
 COPY . .
 RUN npm install
 RUN npm run build --prod
-
-
-FROM nginx:latest
-COPY --from=build app/dist/electric-equipment-ui usr/share/nginx/html
-EXPOSE 80
+#stage 2
+FROM nginx:alpine
+COPY --from=node /app/dist/electric-equipment-ui /usr/share/nginx/html
